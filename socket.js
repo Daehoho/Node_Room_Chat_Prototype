@@ -9,13 +9,14 @@ module.exports = function (io) {
         if (pre_nick != undefined) delete socket_ids[pre_nick];
         socket_ids[nickname] = socket.id;
         socket.nickname = nickname;
+        console.log("registeruser() socket.nickname: " + socket.nickname);
         // io.sockets.emit('userlist', {users: Object.keys(socket_ids)});
     };
 
     io.on('connection', function (socket) {
-        socket.emit('new', {nickname: 'GUEST-' + count});
-        registerUser(socket, 'GUEST-'+count);
-        count++;
+         socket.emit('new', {nickname: 'UNKNOWN-' + count});
+        // registerUser(socket, 'GUEST-'+count);
+        // count++;
 
         socket.on('changename', function(data) {
             registerUser(socket, data.nickname);
@@ -23,11 +24,10 @@ module.exports = function (io) {
 
         socket.on('joinroom', function (data) {
             socket.join(data.room);
-            console.log("test room no: " + data.room);
             socket.room = data.room;
 
             var room = data.room;
-            var nickname = 'GUEST-'+count;
+            var nickname = 'UNKNOWN-'+count;
 
             socket.nickname = nickname;
 

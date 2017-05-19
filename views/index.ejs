@@ -1,7 +1,5 @@
 <html>
-
 <head>
-
     <title></title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -21,11 +19,12 @@
 
         <script type="text/javascript">
             var socket = io.connect('http://localhost:3000');
-            socket.emit('joinroom', {room: '<%=room%>', nickname: $('#nickname').val()});
+            socket.emit('joinroom', {room: '<%=room%>'});
 
             $("#changename").click(function() {
                 socket.emit('changename', {nickname: $('#nickname').val()});
             });
+
             $("#msgbox").keyup(function(event){
                 if (event.which == 13) {
                     socket.emit('send_msg', {to: $('#to').val(),msg: $('#msgbox').val()});
