@@ -9,7 +9,6 @@ module.exports = function (io) {
         if (pre_nick != undefined) delete socket_ids[pre_nick];
         socket_ids[nickname] = socket.id;
         socket.nickname = nickname;
-        console.log("registeruser() socket.nickname: " + socket.nickname);
         // io.sockets.emit('userlist', {users: Object.keys(socket_ids)});
     };
 
