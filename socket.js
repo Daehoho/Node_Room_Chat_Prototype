@@ -13,7 +13,6 @@ module.exports = function (io) {
     };
 
     io.on('connection', function (socket) {
-         socket.emit('new', {nickname: 'UNKNOWN-' + count});
         // registerUser(socket, 'GUEST-'+count);
         // count++;
 
@@ -26,7 +25,7 @@ module.exports = function (io) {
             socket.room = data.room;
 
             var room = data.room;
-            var nickname = 'UNKNOWN-'+count;
+            var nickname =  data.nickname;
 
             socket.nickname = nickname;
 
