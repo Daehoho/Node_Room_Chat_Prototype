@@ -3,10 +3,53 @@ var JSON = require("JSON");
 var path = require('path');
 var router = express.Router();
 
+//-------------------- db connect --------------- //
+var mysql_dbc = require('../db/db_con')();
+var connection = mysql_dbc.init();
+mysql_dbc.test_open(connection);
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
   // res.sendFile(path.join(__dirname, '..', 'views', 'index.html'));
+});
+
+router.post('/chat', function (req, res, next) {
+  req.accepts('application/json');
+  
+  var body = req.body
+
+  res.render('chat', {nickname: body.nickname, room: body.room});
+});
+
+router.get('/login', function(req, res, next) {
+  res.sendFile(path.join(__dirname, '..', 'views', 'login.html'));
+});
+
+router.post('/login', function(req, res, next) {
+  req.accepts('application/json');
+
+  var body = req.body;
+  var stmt = 'select count(*) from member_tb where email = "' + body.email + '" AND password = "'  + body.password + '"';
+  // var stmt = "select * from member_tb";
+
+  var query = connection.query(stmt, function(err, rows) {
+    if(err) {
+      console.log(err);
+      return;
+    }
+    console.log(rows);
+    var cnt = rows[0].cnt;
+  
+    if(cnt == 1) {
+      req.session.key = body.email;
+      res.end('done');
+    } else {
+      // alert("wrong information");
+      res.redirect('/login');
+    }
+  });
+  console.log(query);
 });
 
 // router.post('/chat', function (req, res, next) {
@@ -43,14 +86,6 @@ router.get('/', function(req, res, next) {
 //     res.render('chat', { nickname: value.nickname, room: req.params.room });
 //   })
 // });
-
-router.post('/chat', function (req, res, next) {
-  req.accepts('application/json');
-  
-  var body = req.body
-
-  res.render('chat', {nickname: body.nickname, room: body.room});
-});
 
 
 module.exports = router;
