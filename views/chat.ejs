@@ -10,10 +10,10 @@
  
 <b>Welcome ROOM : <%= room%></b><p>
     Name <input type="text" id="nickname" /> <input type="button" id="changename" value="Change name"/><br>
-    To
+    <!--To
     <select id="to">
         <option value="ALL">ALL</option>
-    </select>
+    </select>-->
     Message  <input type="text" id="msgbox"/>
     <br>
     <span id="msgs"></span>
@@ -21,6 +21,7 @@
     <script type="text/javascript">
         var socket = io.connect('http://localhost:3000');
         socket.emit('joinroom',{room:'<%=room%>', nickname: '<%=nickname%>'});
+        $('#nickname').val('<%=nickname%>');
  
         $('#changename').click(function(){
             socket.emit('changename',{nickname:$('#nickname').val()});

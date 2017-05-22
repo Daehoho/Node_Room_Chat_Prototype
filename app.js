@@ -7,8 +7,15 @@ var bodyParser = require('body-parser');
 var SocketIo = require('socket.io');
 var socketEvents = require('./socket.js');
 
+var session = require('express-session');
+var redis = require('redis');
+var redisStore = require('connect-redis')(session);
+var client = redis.createClient();
+// var client = require('./redis_connect.js');
+
 var index = require('./routes/index');
 var users = require('./routes/users');
+var sessions = require('./routes/sessions');
 
 var app = express();
 
@@ -24,7 +31,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.use(session(
+  {
+    secret: 'secret_key',
+    store: new redisStore({
+      host : "127.0.0.1",
+      port: 6379,
+      client: client,
+      prefix: "session:",
+      db : 0
+    }),
+    saveUninitialized: false,
+    resave: true
+  }
+));
+
 app.use('/', index);
+app.use('/session', sessions(session));
 app.use('/users', users);
 
 
