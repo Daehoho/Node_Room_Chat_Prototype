@@ -4,6 +4,14 @@ var router = express.Router();
 
 module.exports = function(session) {
 
+    router.get('/', function(req, res, next) {
+        if(req,session.key) {
+            console.log("success");
+            console.log(req.session.key);
+        } else {
+            res.render('index.html');
+        }
+    });
     router.get('/set/:value', function (req, res) {
         req.session.redSession = req.params.value;
         res.send('session written in Redis successfully');

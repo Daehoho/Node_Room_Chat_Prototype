@@ -8,9 +8,7 @@ var SocketIo = require('socket.io');
 var socketEvents = require('./socket.js');
 
 var session = require('express-session');
-var redis = require('redis');
-var redisStore = require('connect-redis')(session);
-var client = redis.createClient();
+var redis = require('./redis.js');
 // var client = require('./redis_connect.js');
 
 var index = require('./routes/index');
@@ -34,16 +32,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session(
   {
-    secret: 'secret_key',
-    store: new redisStore({
-      host : "127.0.0.1",
+    store: new RedisStore({
+      client: redis,
+      host: 'localhost',
       port: 6379,
-      client: client,
       prefix: "session:",
-      db : 0
+      db : 0,
+      saveUninitialized: false,
+      resave: false
     }),
-    saveUninitialized: false,
-    resave: true
+    secret: test_key,
+    cookie: {maxAge: 2592000000 }
   }
 ));
 
