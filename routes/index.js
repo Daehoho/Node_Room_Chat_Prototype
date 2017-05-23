@@ -61,46 +61,9 @@ router.post('/login', function(req, res, next) {
       console.log(req.session);
       res.send('<script>alert("pass!");location=href="/chat";</script>');
     } else {
-      res.json({result: 'fail'});
       res.send('<script>alert("wrong information");history.back();</script>')
     }
   });
 });
-
-// router.post('/chat', function (req, res, next) {
-//   req.accepts('application/json');
-
-//   console.log("1:" + req.body.room);
-//   var key = req.body.room;
-//   var value = JSON.stringify(req.body);
-//   console.log(key);
-
-//   client.set(key, value, function(err, data) {
-//     if(err) {
-//       console.log(err);
-//       res.send("error" + err);
-//       return;
-//     }
-//     client.expire(key, 100);
-//     // res.json(value);
-//     res.redirect("/chat/"+ key);
-//   });
-// });
-
-// router.get('/chat/:room', function(req, res, next) {
-//   //console.log("room name is : " +  req.params.room);
-//   var key = req.params.room;
-
-//   client.get(key, function (err,data) {
-//     if(err) {
-//       console.log(err);
-//       res.send("error " + err);
-//       return;
-//     }
-//     var value = JSON.parse(data);
-//     res.render('chat', { nickname: value.nickname, room: req.params.room });
-//   })
-// });
-
 
 module.exports = router;
