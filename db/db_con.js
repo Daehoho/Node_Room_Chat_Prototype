@@ -16,7 +16,7 @@ module.exports = function() {
         },
         create_pool: function() {
             return mysql.createPool({
-                connectionLimit: 10,
+                connectionLimit: 50,
                 host : config.host,
                 user : config.user,
                 password : config.password,
