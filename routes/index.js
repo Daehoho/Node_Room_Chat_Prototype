@@ -5,32 +5,11 @@ var router = express.Router();
 
 //-------------------- db connect --------------- //
 var mysql_dbc = require('../db/db_con')();
-var connection = mysql_dbc.init();
-mysql_dbc.test_open(connection);
+var pool = mysql_dbc.create_pool();
+mysql_dbc.test_open(pool);
 
-/* GET home page. */
+
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-  // res.sendFile(path.join(__dirname, '..', 'views', 'index.html'));
-});
-
-router.get('/chat', function (req, res, next) {
-  if(req.session.user_email) {
-    res.render('chat', {nickname: req.session.name, room: req.session.group_no })
-  } else {
-    res.send('<script>alert("no session information");location.href("/login");</script>');
-  }
-});
-
-// router.post('/chat', function (req, res, next) {
-//   req.accepts('application/json');
-  
-//   var body = req.body
-
-//   res.render('chat', {nickname: body.nickname, room: body.room});
-// });
-
-router.get('/login', function(req, res, next) {
   res.sendFile(path.join(__dirname, '..', 'views', 'login.html'));
 });
 
@@ -43,27 +22,37 @@ router.post('/login', function(req, res, next) {
   var stmt = 'select mg.group_no, count(*) cnt, m.name from member_tb m, member_group_tb mg'
               +  ' where m.email = "' + email + '" AND m.password = "'  + password + '"'
               + ' AND mg.member_no = m.member_no';
-  // var stmt = "select * from member_tb";
+  pool.getConnection(function (err, connection) {
+    var query_result = connection.query(stmt, function(err, rows) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(rows);
+      var cnt = rows[0].cnt;
+      var name = rows[0].name;
+      var group_no = rows[0].group_no;
 
-  var query = connection.query(stmt, function(err, rows) {
-    if(err) {
-      console.log(err);
-    }
-    console.log(rows);
-    var cnt = rows[0].cnt;
-    var name = rows[0].name;
-    var group_no = rows[0].group_no;
-
-    if(cnt == 1) {
-      req.session.user_email = email;
-      req.session.name = name;
-      req.session.group_no = group_no;
-      console.log(req.session);
-      res.send('<script>alert("pass!");location=href="/chat";</script>');
-    } else {
-      res.send('<script>alert("wrong information");history.back();</script>')
-    }
+      if (cnt == 1) {
+        req.session.user_email = email;
+        req.session.name = name;
+        req.session.group_no = group_no;
+        console.log(req.session);
+        res.send('<script>alert("pass!");location=href="/chat";</script>');
+      } else {
+        res.send('<script>alert("wrong information");history.back();</script>')
+      }
+      connection.release();
+    });
   });
+
+});
+
+router.get('/chat', function (req, res, next) {
+  if(req.session.user_email) {
+    res.render('chat', {nickname: req.session.name, room: req.session.group_no })
+  } else {
+    res.send('<script>alert("no session information");location.href("/login");</script>');
+  }
 });
 
 module.exports = router;
