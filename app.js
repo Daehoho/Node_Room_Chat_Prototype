@@ -8,9 +8,10 @@ var SocketIo = require('socket.io');
 var socketEvents = require('./socket.js');
 
 var session = require('express-session');
+
 // var redis = require('redis');
-var RedisStore = require('connect-redis')(session);
-var client = require('./redis.js');
+// var RedisStore = require('connect-redis')(session);
+// var client = require('./redis.js');
 // var client = require('./redis_connect.js');
 
 var index = require('./routes/index');
@@ -32,21 +33,27 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use(session(
-  {
-    store: new RedisStore({
-      client: client,
-      host: 'localhost',
-      port: 6379,
-      prefix: "session:",
-      db : 0,
-      saveUninitialized: false,
-      resave: false
-    }),
-    secret: 'test_key',
-    cookie: {maxAge: 2592000000 }
-  }
-));
+// use redis for session store
+// app.use(session(
+//   {
+//     store: new RedisStore({
+//       client: client,
+//       host: 'localhost',
+//       port: 6379,
+//       prefix: "session:",
+//       db : 0,
+//       saveUninitialized: false,
+//       resave: false
+//     }),
+//     secret: 'test_key',
+//     cookie: {maxAge: 2592000000 }
+//   }
+// ));
+app.use(session({
+  secret: 'daeho',
+  resave: false,
+  saveUninitialized: true
+}))
 
 app.use('/', index);
 app.use('/session', sessions(session));

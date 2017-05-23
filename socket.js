@@ -41,6 +41,9 @@ module.exports = function (io) {
 
             rooms[room].socket_ids[nickname] = socket.id;
 
+            console.log("room state:");
+            console.log(rooms);
+
             data = { msg: nickname + ' 님이 입장하셨습니다' };
             io.sockets.in(room).emit('broadcast_msg', data);
 

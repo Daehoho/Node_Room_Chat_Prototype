@@ -29,7 +29,7 @@
 
         $("#msgbox").keyup(function(event) {
             if (event.which == 13) {
-                socket.emit('send_msg',{to:$('#to').val(),msg:$('#msgbox').val()});
+                socket.emit('send_msg',{to:'ALL' ,msg:$('#msgbox').val()});
                 $('#msgbox').val('');
             }
         });
