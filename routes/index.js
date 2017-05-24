@@ -19,18 +19,18 @@ router.post('/login', function(req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
 
-   var stmt = 'select mg.group_no, count(*) cnt, m.name from member_tb m, member_group_tb mg'
-               +  ' where m.email = "' + email + '" AND m.password = "'  + password + '"'
-               + ' AND mg.member_no = m.member_no';
+   var stmt = 'select MG.GROUP_NO, COUNT(*) CNT, M.MEMBER_NAME from MEMBER_TB M, MEMBER_GROUP_TB MG'
+               +  ' where M.EMAIL = "' + email + '" AND M.PASSWORD = "'  + password + '"'
+               + ' AND MG.MEMBER_NO = M.MEMBER_NO';
   pool.getConnection(function (err, connection) {
     var query_result = connection.query(stmt, function(err, rows) {
       if (err) {
         console.log(err);
       }
       console.log(rows);
-      var cnt = rows[0].cnt;
-      var name = rows[0].name;
-      var group_no = rows[0].group_no;
+      var cnt = rows[0].CNT;
+      var name = rows[0].MEMBER_NAME;
+      var group_no = rows[0].GROUP_NO;
 
       if (cnt == 1) {
         req.session.user_email = email;

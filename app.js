@@ -1,22 +1,25 @@
+// ============================  Express Basic Settings ============================ //
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+// ============================  Import About Socket.io  ============================ //
 var SocketIo = require('socket.io');
 var socketEvents = require('./socket.js');
 
+// ============================  Import About Redis ============================ //
 var session = require('express-session');
+var redis_config = require('./redis/redis_info')().daou_server;
+var redis = require('./redis/redis');
+var redisStore = require('connect-redis')(session);
 
-// var redis = require('redis');
-// var RedisStore = require('connect-redis')(session);
-// var client = require('./redis.js');
-// var client = require('./redis_connect.js');
 
+// ============================  Import About Routes ============================ //
 var index = require('./routes/index');
 var users = require('./routes/users');
-var sessions = require('./routes/sessions');
 
 var app = express();
 
@@ -32,31 +35,31 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// express-session 
+// app.use(session({
+//   secret: 'daeho',
+//   resave: false,
+//   saveUninitialized: true
+// }));
 
-// use redis for session store
-// app.use(session(
-//   {
-//     store: new RedisStore({
-//       client: client,
-//       host: 'localhost',
-//       port: 6379,
-//       prefix: "session:",
-//       db : 0,
-//       saveUninitialized: false,
-//       resave: false
-//     }),
-//     secret: 'test_key',
-//     cookie: {maxAge: 2592000000 }
-//   }
-// ));
-app.use(session({
-  secret: 'daeho',
-  resave: false,
-  saveUninitialized: true
-}))
+// redis-session
+app.use(session(
+  {
+    secret: 'scecret_key',
+    store: new redisStore({
+      host: redis_config.host,
+      port: redis_config.port,
+      client: redis,
+      prefix: "session:",
+      db: 0
+    }),
+    saveUninitialized: false,
+    resave: true
+  }
+));
+
 
 app.use('/', index);
-app.use('/session', sessions(session));
 app.use('/users', users);
 
 

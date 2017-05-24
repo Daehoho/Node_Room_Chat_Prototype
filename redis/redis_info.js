@@ -1,4 +1,3 @@
-
 module.exports = (function () {
     return {
         local: {
@@ -7,7 +6,7 @@ module.exports = (function () {
         },
         daou_server: {
             host: '175.115.95.51',
-            port: '6379',
+            port: 6379,
             password: '*daou1234!'
         }
     }
