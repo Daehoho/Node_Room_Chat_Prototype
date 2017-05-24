@@ -7,7 +7,12 @@ module.exports = (function () {
             password: 'test',
             database: 'test'
         },
-        remote: {
-        }
+        daou_server: {
+            host: '175.115.95.51',
+            port: '3306',
+            user: 'moyeo',
+            password: '*daou1234!',
+            database: 'moyeo'
+        },
     }
 });
