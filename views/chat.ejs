@@ -8,7 +8,7 @@
 </head>
 <body>
  
-<b>Welcome ROOM : <%= room%></b><p>
+<b>Welcome ROOM : <%= room%></b><p> <input type="button" id="logout"  value="LogOut"/><br>
     Name <input type="text" id="nickname" /> <input type="button" id="changename" value="Change name"/><br>
     <!--To
     <select id="to">
@@ -19,8 +19,8 @@
     <span id="msgs"></span>
  
     <script type="text/javascript">
-        // var socket = io.connect('http://localhost:3000');
-        var socket = io.connect('http://175.115.95.51:3000');
+        var socket = io.connect('http://localhost:3000');
+        // var socket = io.connect('http://175.115.95.51:3000');
         socket.emit('joinroom',{room:'<%=room%>', nickname: '<%=nickname%>'});
         $('#nickname').val('<%=nickname%>');
  
@@ -28,9 +28,13 @@
             socket.emit('changename',{nickname:$('#nickname').val()});
         });
 
+        $('#logout').click(function() {
+            location.href="/logout";
+        });
+
         $("#msgbox").keyup(function(event) {
             if (event.which == 13) {
-                socket.emit('send_msg',{to:'ALL' ,msg:$('#msgbox').val()});
+                socket.emit('send_msg',{to:'ALL' ,msg:$('#msgbox').val(), date: new Date()});
                 $('#msgbox').val('');
             }
         });

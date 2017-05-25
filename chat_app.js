@@ -54,6 +54,7 @@ app.use(session(
       db: 0,
       ttl: 10800
     }),
+    cookie: { maxAge: 10800 },
     saveUninitialized: false,
     resave: true
   }
