@@ -19,7 +19,8 @@
     <span id="msgs"></span>
  
     <script type="text/javascript">
-        var socket = io.connect('http://localhost:3000');
+        // var socket = io.connect('http://localhost:3000');
+        var socket = io.connect('http://175.115.95.51:3000');
         socket.emit('joinroom',{room:'<%=room%>', nickname: '<%=nickname%>'});
         $('#nickname').val('<%=nickname%>');
  
