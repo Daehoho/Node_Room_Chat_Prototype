@@ -60,14 +60,28 @@ router.post('/login', function(req, res, next) {
 
 router.post('/chat', function (req, res, next) {
   var chat_info = {
+    group_no : req.body.group_no,
     room : req.body.group_name,
-    member_name : req.body.member_name
+    member_name : req.body.member_name,
+    member_no : req.body.member_no
   }
-  if(req.session.email) {
-    res.render('chat', {nickname: chat_info.member_name, room: chat_info.room })
-  } else {
-    res.send('<script>alert("no session information");location.href("/login");</script>');
-  }
+  var stmt = "SELECT MEMBER_NAME" + 
+             " FROM MEMBER_TB" + 
+             " WHERE MEMBER_NO IN" + 
+             " (SELECT MEMBER_NO FROM MEMBER_GROUP_TB WHERE GROUP_NO = ? AND MEMBER_NO != ?)";
+  pool.getConnection(function(err, connection) {
+    if(err) console.log("get connection err: " + err);
+    connection.query(stmt, [chat_info.group_no, chat_info.member_no], function(err, rows) {
+      if (err) console.log("query err: " + err);
+      console.log(rows);
+      if (req.session.email) {
+        res.render('chat', { member_name: chat_info.member_name, room: chat_info.room, member_list: rows})
+      } else {
+        res.send('<script>alert("no session information");location.href("/login");</script>');
+      }
+      connection.release();
+    });
+  });
 });
 
 router.get('/group', function (req, res, next) {

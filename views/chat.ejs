@@ -9,23 +9,26 @@
 <body>
  
 <b>Welcome ROOM : <%= room%></b><p> <input type="button" id="logout"  value="LogOut"/><br>
-    Name <input type="text" id="nickname" /> <input type="button" id="changename" value="Change name"/><br>
+    Name <%= member_name%> <br><br>
     <!--To
     <select id="to">
         <option value="ALL">ALL</option>
     </select>-->
+    <div id="connected_list">
+        <h3>접속현황</h3>
+    </div>
     Message  <input type="text" id="msgbox"/>
     <br>
     <span id="msgs"></span>
  
     <script type="text/javascript">
         var socket = io.connect('http://localhost:3000');
-        // var socket = io.connect('http://175.115.95.51:3000');
-        socket.emit('joinroom',{room:'<%=room%>', nickname: '<%=nickname%>'});
-        $('#nickname').val('<%=nickname%>');
+        var member_list = [];
+
+        socket.emit('joinroom',{room:'<%=room%>', member_name: '<%=member_name%>'});
  
         $('#changename').click(function(){
-            socket.emit('changename',{nickname:$('#nickname').val()});
+            socket.emit('changename',{member_name:$('#member_name').val()});
         });
 
         $('#logout').click(function() {
@@ -40,25 +43,35 @@
         });
 
         // socket.on('new',function(data){
-        //     console.log(data.nickname);
-        //     $('#nickname').val(data.nickname);
+        //     console.log(data.member_name);
+        //     $('#member_name').val(data.member_name);
         // });
  
         // 새로운 사용자가 들어오거나, 사용자가 이름을 바꿨을때 "To" 리스트를 변경함
         socket.on('userlist',function(data){
             var users = data.users;
             console.log(users);
-            console.log(data.users.length);
             $('#to').empty().append('<option value="ALL">ALL</option>');
             for(var i=0;i<data.users.length;i++){
                 $('#to').append('<option value="'+users[i]+'">'+users[i]+"</option>");
             }
         });
- 
+
+        socket.on('newuser', function(data) {
+            var user = data.new_user;
+        });
+
         socket.on('broadcast_msg',function(data){
             console.log(data.msg);
             $('#msgs').append(data.msg+'<BR>');
         });
+
+        function connected_user_list(user) {
+            for(var i=0;i<user.length;i++){
+                $('#connected_list').append('<span>' + user[i] + '</span>' + '<BR>');
+            }
+        };
+
     </script>
 </body>
 </html>

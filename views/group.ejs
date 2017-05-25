@@ -28,8 +28,10 @@
         <td><%=group.GROUP_DESC%></td>
         <td><%=group.GROUP_IMG%></td>
         <form method="post" action="/chat">
+         <input type="hidden" name="group_no" value="<%=group.GROUP_NO%>">
          <input type="hidden" name="group_name" value="<%=group.GROUP_NAME%>">
          <input type="hidden" name="member_name" value="<%=user.name%>">
+         <input type="hidden" name="member_no" value="<%=user.member_no%>">
         <td><input type="submit" value="go chat"></td>
         </form>
     </tr>
