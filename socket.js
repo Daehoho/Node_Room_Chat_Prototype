@@ -94,7 +94,7 @@ module.exports = function (io) {
             var room = socket.room;
             var nickname = socket.nickname;
             console.log('in send msg room is ' + room);
-            console.log(nickname + ' | ' + new Date() + '|' + data.msg + "|");
+            console.log(nickname + ' | ' + data.msg + '|' + new Date());
             data.msg = nickname + ' : ' + data.msg;
             if (data.to == 'ALL') {
                 socket.broadcast.to(room).emit('broadcast_msg', data);
