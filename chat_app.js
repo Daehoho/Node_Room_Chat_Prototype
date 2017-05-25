@@ -51,7 +51,8 @@ app.use(session(
       port: redis_config.port,
       client: redis,
       prefix: "session:",
-      db: 0
+      db: 0,
+      ttl: 10800
     }),
     saveUninitialized: false,
     resave: true
