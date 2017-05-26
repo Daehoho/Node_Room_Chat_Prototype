@@ -1,6 +1,5 @@
 var redis = require("redis");
 var config = require('./redis_info')().daou_server;
-console.log(config);
 var redisClient = redis.createClient(config.port, config.host);
 
 // if (config.password != undefined) {
@@ -11,6 +10,7 @@ var redisClient = redis.createClient(config.port, config.host);
 redisClient.auth(config.password, function (err) {
     if (err) throw err;
 });
+
 redisClient.on('error', function(err) {
     console.log('Redis error: ' + err);
 });

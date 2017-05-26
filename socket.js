@@ -80,6 +80,7 @@ module.exports = function (io) {
 
         socket.on('disconnect', function (data) {
             var room = socket.room;
+            console.log(data);
 
             if (room != undefined && rooms[room] != undefined) {
                 var member_name = socket.member_name;
